@@ -1,3 +1,332 @@
-\documentclass{article}
+\documentclass{report}
+\title{	{\bf \Huge \vspace{10mm} Development of time-resolved protein crystallography methods in the microsecond to millisecond time domain\\}
+	\vspace{10mm}
+{Doctorate Thesis \\ \vspace{7mm} \small {\bf Nicolas Caramello}\\ ESRF, Grenoble, France\\}
+\date{}
+	\vspace{10mm} \centering {\small Supervisors: \\ Antoine Royant (CNRS-ESRF) \\Arwen Pearson (Universität Hamburg)\\} 
+
+\vspace{5mm}
+	\begin{figure}[H]
+		\Centering
+		\includegraphics[scale=0.10]{images/UGA_logo.png}
+	\end{figure}
+\includegraphics[scale=0.0666]{ESRF-LogoBaseline-RGB.jpg}\hspace{45mm}
+\includegraphics[scale=0.10]{Hamburg_Universitat_logo.jpg}	
+
+	}	
+\author{Nicolas Caramello}
+\usepackage{textcomp}
+\usepackage{subscript}
+\usepackage{array}
+\usepackage{fourier}
+\usepackage{makecell}
+\usepackage{abstract}
+\usepackage{ragged2e}
+\usepackage{seqsplit}
+\usepackage{minted}
+\usepackage{rotating}
+\usepackage{geometry,lipsum}
+\geometry{margin=3cm}
+\usepackage{standalone}
+\usepackage[font=footnotesize,labelfont=bf]{caption}
+\usepackage{tabularx}
+\usepackage{titling}
+\setlength{\droptitle}{-3cm}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{arydshln}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage[bottom]{footmisc}
+\usepackage{xcolor}
+\usepackage[utf8]{inputenc}
+\graphicspath{{images/}}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{gensymb}
+\usepackage[nospace]{varioref}
+\usepackage{indentfirst}
+\usepackage{units}
+\usepackage{textalpha}
+\usepackage{bibentry} 
+\usepackage{pdfpages}
+% \usepackage[export]{adjustbox}
+\captionsetup[subfigure]{position=top,singlelinecheck=false}
+\makeatletter
+\setlength{\@fptop}{0pt}
+\makeatother
+\usepackage[authordate,bibencoding=auto,strict,backend=biber]{biblatex-chicago} %[authordate,bibencoding=auto,strict,backend=biber,style=natbib]
+\DefineBibliographyStrings{english}{%
+  andothers = {\textit{et al.}},
+}
+\addbibresource{lib.bib}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize \leftmark}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\fancypagestyle{firststyle}
+	{\fancyhf{}
+	
+ 	 \renewcommand{\headrulewidth}{0pt} \fancyfoot[R]{\thepage} }
+
+%Changing the numbering scheme
+% \renewcommand\thepart{\Roman{part}}
+% \renewcommand\thechapter{\thepart.\arabic{chapter}}
+% \renewcommand\thesection{\thepart.\thechapter.\arabic{section}}
+% \renewcommand\thesubsection{\thepart.\thechapter.\thesection.\arabic{subsection}}
+% \renewcommand\thesubsubsection{\thepart.\thechapter.\thesection.\thesubsection.\alph{subsection}}
+\fancyfoot[R]{\thepage}
+\onehalfspacing
+% \renewcommand{\rmdefault}{phv} % sets the font to Arial
+\renewcommand{\normalsize}{\fontsize{11}{12}\selectfont} % sets the font size to 11pt
 \begin{document}
+\includepdf[page=-]{couverture_these_AR_lowres.pdf}
+% {  \thispagestyle{empty} \maketitle \thispagestyle{empty} }
+% \thispagestyle{firststyle}
+\setcounter{page}{1} 
+% \setcounter{secnumdepth}{3}
+
+\begin{quote}
+``L'attivita scientifica è materiata per grandissima parte di sforzo fantastico; chi è incapace di costruire ipotesi non sarà mai scienziato.'' \\
+\textit{-- Antionio Gramsci, \textit{Cronache Torinesi}, 1917}
+\end{quote}
+
+
+\pagebreak
+
+\section*{Acknowledgements}
+
+First and foremost, I would like to Thank Antoine and Arwen, my PhD supervisors, for guiding me and trusting me all along my PhD journey. Thank you Antoine for your patience with my being stubborn, for coming in on weekends for crazy experiments and staying (too) late to work on manuscripts with me. You taught me more than words can say and I am proud to say that I owe you a big part of who I am today. Thank you, Arwen for always providing me with lots of crazy ideas and advice, helping me grasp the more physic-oriented concepts underlying diffraction and protein chemistry, but most importantly, always cheering me up and being so welcoming to me in Hamburg. 
+
+
+I have been incredibly lucky to have you as a mentor, Christoph, your advice and the leads you gave me during our meetings kept me focused during the entire PhD and helped get it finished. I will never forget that you took the time to teach me how to collect the best data possible during these early morning data-collections, and explained crystallography to the layman-biologist that I am. 
+
+
+Thank you Sylvain for answering all of the questions I pestered you with, I can say with confidence that I never would have learnt so fast without your precious help. You helped me discover crystallography, taught me the art of collecting good data, even at room temperature, and helped me understand how to navigate the world of Academia, all while keeping my spirits high.
+
+
+I would like to thank Montserrat Soler Lopez for her support and warm encouragement during my PhD. I also would like to thank Gordon Leonard for his help and administrative support in figuring out how my ESRF/UHH contracts were going to work-out. Special thanks to Samira and Melissa for helping me get set up in the ESRF biochem lab, troubleshooting my expression and purification mishaps, and always being so nice in the lab. I would like to also thank Susanne and Heike for helping me get set up in the HARBOR biolab, and for always making me feel welcome when I visited Hamburg. I would like to thank Daniele, Sam, and Shibom for all of their help both during the beamtime on ID29 and with many of the problems I encountered with serial synchrotron crystallography. 
+
+I would like to thank Johanna Hakanpää and Guillaume Pompidor from beamline P11 for providing me with the opportunity to run my first ever serial crystallography experiment and setting my crystal batches, but most importantly for compensating the poor weather of Hamburg with their warm smiles everytime I visited. I would also like to thank Alexandra Henkel, Marina Glachenkova from the team of Dominik Oberthur, for their support with their tape-drive setup and for processing serial crystallography data. I would also like to thank Mia Lahey-Rudolph for her help with the beamtimes on P11 and ID29. 
+
+I would like to give a special thanks to Sam for his always insightful advice and for raising my morale whenever I felt down. The same goes for Antonio and Anmol, the rest of our office gang, who helped me through many a tough spot. 
+
+I would also like to thank Sergei, Luca, Mahmoud and Yi-min, for all of the times I could rely on you to help, or just have a nice chat that would lift my spirits. I am glad I had the four of you as PhD brothers and sister. Thank you Sergei for our nice talks around coffee or during data-collection, teaching me so much about microbial rhodopsins and life in Russia. And finally thank you so much Luca for all of our nice chats around the coffee machine and our climbing session. Those really made my weeks. I was very lucky to have you as a companion in this PhD journey, hold-on just a little bit more, you are almost there. 
+
+
+
+
+Thank you so much, Manu, for agreeing to take me along the Photolyase story. You allowed me to discover the world of XFELs and I am extremely grateful for our productive and wonderful collaboration, which pushed me to mature many interesting ideas and tools, but also for our nice discussions about evolution and other fascinating topics. I consider myself very lucky to have been able to be part of this adventure, and it made me hungry for more. 
+
+
+I would also like to thank Ivo, Marty and Jack for their interesting project and questions about on-line spectroscopy, pushing to develop tools that can be used by someone else than me. 
+ 
+
+\vspace{9mm}
+Je te remercie du fond tu coeur, Océane, ce sont tes sourires et ton soutien sans faille qui m'ont porté sur les dernières longueurs du marathon que fut cette thèse. Il y a beaucoup de toi dans chacun de ces mots écrits à un rythme effréné dans notre bureau. Tu m’as appris que non seulement il y a une vie en dehors de ma thèse, mais aussi que je suis infiniment plus heureux ainsi.
+
+Merci Raph, pour toutes ces fois où tu m'as aidé à prendre un pas de recul et respirer quand je m'enferrais trop dans un projet. Pour moi la thèse, ça restera aussi les ballades dans la neige dans le vercors en chantant, la luge en redescendant du Moucherotte avec Rox et Max, et les gofasts-surprise au Diamant. Un immense merci aussi à toute la bande de la COGIP et de la colloc 101, pèle-mêle Rémi, Maxime, Valé, Youenn, Roxanne, Gaël, PA, Nathan, Vlad, Noémie, et tous les autres pour votre soutien, et toutes les bouffées  que vous m'avez offert tout au long de ma thèse. 
+
+Enfin, je voudrais prendre le temps de remercier toute ma famille qui m’a soutenu tout au long de mes études. Merci Papa et Maman de m'avoir toujours encouragé à poursuivre dans une voie qui me plaisait. Et pour finir, merci infiniment Agnès de m’avoir transmit si tôt le virus de la recherche, puis d’avoir organisé mes premiers pas en laboratoire et fait découvrir avec Joe le monde de la recherche en biologie.
+
+\pagebreak
+
+\section*{Abstract}
+
+\LARGE\textbf{Abstract}
+\normalsize Over the last decade, the development of time-resolved serial crystallography (TR-SX) at XFELs and synchrotrons has allowed researchers to study phenomena occurring in proteins on the femtosecond to minute timescale, taking advantage of many technical and methodological breakthroughs. In such an experiment, protein crystals of various sizes are continuously presented to the X-ray beam. Photoactive proteins have naturally been the initial systems to be studied in TR-SX experiments using pump-probe schemes, where the pump is a pulse of visible light. Other reaction initiations through small molecule diffusion are now gaining momentum. During this PhD, a series of biological questions linking protein structures to their functions were tackled, using time-resolved crystallography methods, some of which were developed during this PhD, at synchrotrons, and occasionally XFELs.
+\vspace{10mm}
+% \vspace
+% \vspace
+
+% 
+
+\LARGE\textbf{Résumé}
+\normalsize Le récent développement de la cristallographie sérielle, d'abord au sein des lasers de rayons X à électrons libres (XFEL), puis en synchrotrons, a permis l'étude de phénomènes dynamiques structuraux se produisant sur une échelle allant de la femtoseconde à la minute, grâce à de nombreuses avancées techniques et méthodologiques. Au cours de ces expériences, des cristaux de protéines de taille variable sont continuellement présentés au faisceau de rayons-X. Les protéines photoactives ont naturellement été les premières cibles de ces études de cristallographie sérielles, selon un schéma expérimental 'pompe-sonde' où la pompe consistent en un flash de lumière visible. Des méthodes permettant l’initiation de réactions au sein de cristaux de protéines grâce à la diffusion de petites molécules sont maintenant en train de gagner du terrain. Au cours de ce doctorat, j’ai tenté de répondre à une série de questions biologiques bien précises, reliant structure et fonction des protéines à l’aide de techniques cristallographiques, dont certaines sont le fruit de développements mis en œuvre au cours de mon travail de doctorat, en synchrotrons, et occasionnellement en laser à électrons libres (X-FELs). 
+
+\pagebreak
+
+\section*{Publication record}
+This PhD thesis is based on published articles, submitted manuscripts or manuscripts in preparation. They are listed below in the order in which they appear in the thesis. Joint first authorship is noted with the symbol \textbf{\#} and corresponding authors are noted with the letter \textsuperscript{\textbf{\textalpha}}. 
+
+\paragraph{Paper I:} \textbf{Caramello, N.},  Royant, A.\textsuperscript{\textbf{\textalpha}}\textbf{From femtoseconds to minutes: Time-resolved macromolecular crystallography at XFELs and synchrotrons}. (2024) \textit{Acta Crystallographica Section D Structural Biology}, 80(2), 60–79. \url{doi:10.1107/S2059798323011002}
+
+\paragraph{Paper II:} \textbf{Caramello, N.}, S. Engilberge, Pearson, A. R., von Stetten, D., Oberthür, Henkel, A., D., Glachenkova, M., Hakanpää, J., D. de Sanctis, J. Orlans, S. Basu, \& Royant, A.\textsuperscript{\textbf{\textalpha}} (2024).\textbf{Visualising pH-induced chromophore isomerisation of a Cyan Fluorescent Protein: kinetic vs time-resolved crystallography} \textit{manuscript in preparation}
+
+\paragraph{Paper III:} Aumonier, S.\textbf{\#}, Engilberge, S.\textbf{\#},\textbf{ Caramello, N.}\textbf{\#}, von Stetten, D., Gotthard, G., Leonard, G. A., Mueller-Dieckmann, C., \& Royant, A.\textsuperscript{\textbf{\textalpha}} (2022). \textbf{Slow protein dynamics probed by time-resolved oscillation crystallography at room temperature}. \textit{IUCrJ}, 9(6), 756–767. \url{doi:10.1107/S2052252522009150}
+
+\paragraph{Paper IV:} Maestre-Reyna\textsuperscript{\textbf{\textalpha}}, M.,Wang, P.-H., Nango, E., Hosokawa, Y., Saft, M., Furrer, A., Yang, C.-H., Gusti Ngurah Putu, E. P., Wu,W.-J., Emmerich, H.-J., \textbf{Caramello, N.}, Franz-Badur, S., Yang, C., Engilberge, S.,Wranik, M., Glover, H. L.,Weinert, T.,Wu, H.-Y., Lee, C.-C., Huang,W.-C., Huang, K.-F., Chang, Y.-K., Liao, J.-H.,Weng, J.-H., Gad,W., Chang, C.-W., Pang, A. H., Yang, K.-C., Lin,W.-T., Chang, Y.-C., Gashi, D., Beale, E., Ozerov, D., Nass, K., Knopp, G., Johnson, P. J. M., Cirelli, C., Milne, C., Bacellar, C., Sugahara, M., Owada, S., Joti, Y., Yamashita, A., Tanaka, R., Tanaka, T., Luo, F., Tono, K., Zarzycka,W., Müller, P., Alahmad, M. A., Bezold, F., Fuchs, V., Gnau, P., Kiontke, S., Korf, L., Reithofer, V., Rosner, C. J., Seiler, E. M.,Watad, M.,Werel, L., Spadaccini, R., Yamamoto, J., Iwata, S., Zhong, D., Standfuss, J., Royant, A., Bessho\textsuperscript{\textbf{\textalpha}}, Y., Essen, L.-O.\textsuperscript{\textbf{\textalpha}}, \& Tsai, M.-D.\textsuperscript{\textbf{\textalpha}} (2023). \textbf{Visualizing the DNA repair process by a photolyase at atomic resolution}. Science, 382(6674), eadd7795. \url{doi:10.1126/science.add7795}
+
+\paragraph{Paper V:} Manuel Maestre-Reyna\textbf{\#}\textsuperscript{\textbf{\textalpha}}, Yuhei Hosokawa\textbf{\#}, Po-Hsun Wang\textbf{\#}, Martin Saft, \textbf{Nicolas\\ Caramello}, Sylvain Engilberge, Sophie Franz-Badur, Eka Putra Gusti Ngurah Putu, Mai Nakamura, Wen-Jin Wu, Hsiang-Yi Wu, Cheng-Chung Lee, Wei-Cheng Huang, Kai-Fa Huang, Yao-Kai Chang, Cheng-Han Yang, Wei-Ting Lin, Kai-Chun Yang1, Yuki Ban, Tomoki Imura, Atsuo Kazuoka, Eisho Tanida, Shigeki Owada, Yasumasa Joti, Rie Tanaka, Tomoyuki Tanaka, Fangjia Luo, Kensuke Tono, Stephan Kiontke, Lukas Korf, Yasufumi Umena, Takehiko Tosha, Yoshitaka Bessho, Eriko Nango,  So Iwata, Antoine Royant, Ming-Daw Tsai\textsuperscript{\textbf{\textalpha}}, Junpei Yamamoto\textsuperscript{\textbf{\textalpha}}, \& Lars-Oliver Essen\textsuperscript{\textbf{\textalpha}}. \textbf{Capturing structural intermediates in an animal-like cryptochrome photoreceptor signaling mechanism by time-resolved crystallography}. \textit{submitted manuscript}
+
+\paragraph{Paper VI:} N. Caramello, Y. Hosokawa, P.-H. Wang, K.-Y. Yang, S. Engilberge, J. Yamamoto, L.-O. Essen, A. Royant \& M. Maestre-Reyna.\textsuperscript{\textbf{\textalpha}} \textbf{Visualising the build-up of the signalling state of a cryptochrome with the TR-SOX method}. \textit{Manuscript in preparation}
+
+\paragraph{Paper VII:} Engilberge, S., \textbf{Caramello, N.}, Bukhdruker, S., Byrdin, M., Giraud, T., Jacquet, P., Scortani, D., Biv, R., Gonzalez, H., Broquet, A., van der Linden, P., Rose, S. L., Flot, D., Balandin, T., Gordeliy, V., Lahey-Rudolph, J. M., Roessle, M., de Sanctis, D., Leonard, G. A., Mueller-Dieckmann, C., \& Royant, A.\textsuperscript{\textbf{\textalpha}} (2024). \textbf{The TR-icOS setup at the ESRF: Time-resolved microsecond UV–Vis absorption spectroscopy on protein crystals.} \textit{Acta Crystallographica Section D: Structural Biology}, 80(1). \url{doi:10.1107/S2059798323010483}
+
+\paragraph{Paper VIII:} Caramello, N.\textsuperscript{\textbf{\textalpha}}, Pearson, A. R., Royant, A. \textsuperscript{\textbf{\textalpha}}. \textbf{The in crystallo Optical Spectroscopy toolbox}. \textit{Manuscript in preparation}
+
+\paragraph{Paper IX:} Bolton, R., Machelett, M. M., Stubbs, J., Axford, D., \textbf{Caramello, N.}, Catapano, L., Malý, M., Rodrigues, M. J., Cordery, C., Tizzard, G. J., MacMillan, F., Engilberge, S., von Stetten, D., Tosha, T., Sugimoto, H., Worrall, J. A. R., Webb, J. S., Zubkov, M., Coles, S., Mathieu, E., Steiner, R. A., Murshudov, G., Schrader, T. E., Orville, A. M., Royant, A., Evans, G., Hough, M. A., Owen, R. L., \& Tews, I\textsuperscript{\textbf{\textalpha}}. (2024). \textbf{A redox switch allows binding of Fe(II) and Fe(III) ions in the cyanobacterial iron-binding protein FutA from Prochlorococcus.} \textit{Proceedings of the National Academy of Sciences}, 121(12), e2308478121. \url{doi:10.1073/pnas.2308478121}
+
+\pagebreak
+\section*{Contribution report}
+
+My contribution to the articles and manuscripts listed above is outlined below.  
+
+
+\paragraph{Paper I:} This is a review paper jointly written with Antoine Royant following up on  his talk at the 2023 CCP4 study weekend, for which I extensively searched the literature, provided bibliography-based summaries in preparation for the various sections, and prepared all figures. It serves as a basis for the introduction of this PhD thesis.
+
+\paragraph{Paper II:} I expressed, purified and crystallised the protein sample. I designed the various experimental schemes under the guidance of Antoine Royant. I performed the experiments with the help of others during serial crystallography experiments. The results of this project are presented in Part \ref{part:T-Cer}. 
+
+\paragraph{Paper III:} I am listed as a joint first author of this paper. I expressed and crystallised the sample and participated in the diffraction and spectroscopy data collection. I designed the analysis of the spectroscopy data and implemented the occupancy refinement procedure with suggestions from Sylvain Engilberge. I refined one of the structures deposited, prepared some of the figures and participated to the writing of the manuscript. The paper is reproduced in Chapter \ref{chap:slowprot}, Part \ref{part:LOV2}
+
+\paragraph{Paper IV:} I participated in sample preparation in anaerobic dark conditions for one of the two beamtimes at SwissFEL. I designed, performed and participated in the interpretation of the Singular Value Decomposition analysis of difference electron density maps. Chapter \ref{chap:MmCPDII}, Part \ref{part:Photolyase-Cryptochromes} is focused on my contribution to this paper.
+
+\paragraph{Paper V:} I participated in the time-resolved \textit{in crystallo} absorbance spectroscopy measurements, and I analysed the results. I designed, performed and participated to the interpretation of the Singular Value Decomposition analysis of difference electron density maps. I participated in the writing of the sections of the manuscript describing and interpreting my analyses. \ref{chap:CraCRY_TR-SFX_1}, Part \ref{part:Photolyase-Cryptochromes} is focused on my contribution to this paper.
+
+\paragraph{Paper VI:} I am listed as the first author of the manuscript. I participated in the design of the study, and the diffraction data collection. I designed and performed the data processing and analysis processing. I interpreted the results, together with Manuel Maestre Reyna and Yuhei Hosokawa. Chapter \ref{chap:CraCRY_TR-SOX}, Part \ref{part:Photolyase-Cryptochromes} describes the study. 
+
+\paragraph{Paper VII:} I participated in the commissioning of the instrument, contributed to spectroscopic measurements and designed and performed the analysis of the data. I participated in the interpretation and writing of the results section and prepared one figure. Chapter \ref{chap:TR-icOS}, Part \ref{part:Spectro} is focused on my contribution to this paper.
+
+\paragraph{Paper VIII:} I conceived, wrote and troubleshot the program presented in the paper under the guidance of Antoine Royant. I wrote the manuscript with revisions from Antoine Royant and Arwen Pearson. The manuscript is reproduced in Chapter \ref{chap:toolbox}, Part \ref{part:Spectro}. 
+
+\paragraph{Paper IX:} I participated in the \textit{in crystallo} on-line microspectrophotometry measurements on beamline BM07-FIP2, and designed and performed their analysis. I participated in the interpretation of these results and prepared part of one figure. in Chapter \ref{chap:online-microspec}, Part \ref{part:Spectro} is focused on my contribution to this paper.
+
+
+
+
+\pagebreak
+\tableofcontents 
+\pagebreak
+
+\section*{List of abbreviations}
+
+\noindent \textbf{MX}: Macromolecular crystallography\\
+\textbf{TR-MX}: Time-resolved macromolecular crystallography\\
+\textbf{XFEL}: Free electron X-ray laser\\
+\textbf{SX}: Serial crystallography\\
+\textbf{SFX}: serial femtosecond crystallography\\
+\textbf{SSX}: serial synchrotron crystallography\\
+\textbf{ESRF}: European Synchrotron Radiation Facility\\
+\textbf{EBS}: Extremely Brilliant Source\\
+\textbf{CFEL}: Centre for Free Electron Laser Science\\
+\textbf{DESY}: Deutsches Elektronen SYnchrotron\\
+\textbf{SwissFEL}: Swiss X-ray Free Electron Laser\\
+\textbf{SACLA}: SPring-8 Angstrom Compact free electron LAser\\
+\textbf{LCLS}:  Linac Coherent Light Source\\
+\textbf{T-REXX}: Time-resolved experiments with crystallography endstation of the P14 beamline\\
+\textbf{HARE}: Hit-And-REturn fixed target data collection scheme. \\
+\textbf{\textit{ic}OS}: \textit{in crystallo} optical spectroscopy\\
+\textbf{\textit{ic}AS}: \textit{in crystallo} UV-vis absorption spectroscopy\\
+\textbf{LOV}:  light-oxygen-voltage-sensing\\
+\textbf{LAMA}: Liquid Application Method for time-resolved Analyses\\
+\textbf{MMQX}: millisecond mix-and-quench crystallography\\
+\textbf{rsFP}: reversibly switchable fluorescent protein\\
+\textbf{T-Cer}: Twist-Cerulean (T65A variant of the Cerulean fluorescent protein)\\
+\textbf{T-Cer-s}: The truncated construct of Twist-Cerulean \\
+\textbf{ALD}: Acoustic levitation device\\
+\textbf{V150A}: V150A variant of the truncated construct of Twist-Cerulean\\
+\textbf{MZZ}: Metastable Species of T-Cer containing a chromophore in the Z,Z configuration at acidic pH\\
+\textbf{LOV1}: First light Oxygen Voltage domain of the Phototroppin II from \textit{Arabidopsis} thaliana\\
+\textbf{LOV2}: Second light Oxygen Voltage domain of the Phototroppin II from \textit{Arabidopsis} thaliana\\
+\textbf{FMN}: Flavin Mononucleotide\\
+\textbf{CPD}: cyclobutane pyrimidine dimer\\
+\textbf{FP}: Fluorescent protein\\
+\textbf{FAcD}: Fluoroacetate dehalogenase\\
+\textbf{\textBeta-lac}: \textBeta-lactamase\\
+\textbf{6-4PP}: Pyrimidine 6-4 pyrimidone photoproducts\\
+\textbf{PYP}: Photoactive Yellow Protein\\
+\textbf{ET}: Electron Transfer\\
+\textbf{PCET}: Proton Coupled Electron Transfer\\
+\textbf{LPOR}: light-dependent protochorophyllide oxidoreductase\\
+\textbf{FAP}: fatty-acid photodecarboxylase \\
+\textbf{DNA}: Deoxyribonucleic acid\\
+\textbf{\textit{Mm}CPDII}: Class II Cyclo Pyrimidine Butane repairing photolyase, from \textit{Methanosarcina mazei}\\
+\textbf{aCRY}: animal-like cryptochromes\\
+\textbf{CraCRY}: animal-like cryptochrome of \textit{Chlamydomonas reinhardtii}\\
+\textbf{SVD}: singular value decomposition \\
+\textbf{SV}: singular value
+\textbf{lSV}: left singular vector\\
+\textbf{rSV}: right singular vector \\
+\textbf{FAD}: Flavin adenine dinucleotide\\
+\textbf{FAD\textsuperscript{•-}}: Flavin anionic radical semiquinone form\\
+\textbf{FADH\textsuperscript{•}}: Flavin neutral radical semiquinone form\\
+\textbf{TR-SOX}: Time-resolved serial oscillation crystallography\\
+
+
+\pagebreak
+\part*{Introduction: From femtoseconds to minutes: time-resolved macromolecular crystallography at XFELs and synchrotrons}
+\addcontentsline{toc}{part}{Introduction}
+\counterwithout{section}{chapter}
+    {\input{Chapters/Introduction.tex}}
+\counterwithin{section}{chapter}
+\pagebreak
+\part{Visualising pH-induced chromophore isomerisation of a Cyan Fluorescent Protein: kinetic vs time-resolved crystallography}\label{part:T-Cer}
+\counterwithout{section}{chapter}
+	{\input{Chapters/T-Cer}}
+
+\pagebreak
+\part{LOV2: the blue light sensor as target for slow time-resolved crystallography}\label{part:LOV2}
+
+	{\input{Chapters/LOV2}}
+
+\pagebreak
+
+\part{Study of a Class II CPD Photolyase and a bifunctional cryptochrome}\label{part:Photolyase-Cryptochromes}
+
+	{\input{Chapters/cracry}}
+
+\pagebreak
+
+\part{Spectroscopy \textit{in crystallo} as a complement to crystallography}\label{part:Spectro}
+
+	{\input{Chapters/spectroscopy}}
+
+\pagebreak
+\part*{Discussion: Method developments, driven by biological questions}
+\addcontentsline{toc}{part}{Discussion}
+	{\input{Chapters/discussion}}
+
+\part*{Conclusion}
+\addcontentsline{toc}{part}{Conclusion}
+This thesis presents three overarching biological projects, comprising time-resolved serial crystallography experiments at three synchrotrons and two X-ray-free electron laser facilities. In the course of these projects, I developed protocols to adapt the size of my crystalline sample to an experiment, continued the development of a novel  technique and developed tools to analyse diffraction data. These improvements are detailed throughout the project. In the last part, I present the advances in \textit{in crystallo} UV-vis absorption spectroscopy that I grew as a complementary analysis to time-resolved crystallography. 
+
+In Part \ref{part:T-Cer}, I presented my study of the mechanism by which the chromophore of a variant of the Cerulean fluorescent protein, called Twist-Cerulean, switches configuration in reaction to pH. This produces a configuration of the tryptophan-based chromophore which has never been observed before. I discovered that the isomerisation was prohibited by the crystalline packing of the protein, which prevents the movement of the 7\textsuperscript{th} strand of the \textbeta-barrel of the protein, known to be dynamic in solution. I applied controlled proteolysis and designed a truncated construct to restore the mobility of this strand \textit{in crystallo}, and characterised the isomerisation pathway with a combination of atomic resolution structures, TR-SSX experiments and structures of a variant, which were correlated by \textit{in crystallo} UV-vis absorbance spectroscopy. 
+
+In Part \ref{part:LOV2}, I presented the characterisation of the mechanism leading to the refolding of the C-terminus of a blue-light sensor from \textit{Arabidopsis thaliana} after the decay of the signalling state. I identified the role of a conserved tryptophan in gating the refolding of the C-terminus. I serendipitously discovered that the crystals of this blue-light sensor undergo a space-group change as the activated state attempts to relax back into the ground state, because of an allostery-like interaction between the two monomers of a crystallographic dimer. This interaction breaks one of the symmetry axes of the crystal. 
+
+In Part \ref{part:Photolyase-Cryptochromes}, Chapter \ref{chap:MmCPDII}, I present my analysis of two series of difference maps by singular value decomposition in the framework of a large study of the mechanism of DNA repair by a Class II photolyase. Thanks to this analysis, we were able to match our structural intermediates with the mechanism identified by ultrafast spectroscopy. My SVD analysis also identified a long-lasting intermediate in which the repaired bases are stacked, allowing the recovery of the photolyase's active site and preparing the product release. Finally, it confirmed that the release process operates with a three-step mechanism: back-flipping of the bases into the DNA strand and annealing. In Chapter \ref{chap:CraCRY_TR-SFX_1}, I present my contribution to the study of a bifunctional cryptochrome. I identified the exact time scale of the protonation of a flavin cofactor, a step crucial to prolong the lifetime of a radical until the large-scale protein rearrangements leading to the signalling state can occur, via a time-resolved \textit{in crystallo} UV-vis absorption study. I then used an improved singular value decomposition analysis to identify the two movements at play in the dynamics of the C-terminus (the domain responsible for presumed interaction with partners in the signalling state). In Chapter \ref{chap:CraCRY_TR-SOX}, I observed the remaining steps leading to the rise of the signalling state of this cryptochrome. In particular, I recognised a possible referral mechanism for deciding between signalling and DNA repair states by interrupting an electron transfer chain, as well as the new interaction surfaces uncovered by this unfolding step. These results were obtained thanks to the improvement of a unique time-resolved macromolecular crystallography technique based on the collection of rotation datasets at room temperature. The results produced by this technique are particularly suited to the singular value decomposition analysis. 
+
+
+In part \ref{part:Spectro}, I present my contribution to the commissioning and development of the instrument used for time-resolved \textit{in crystallo} absorption spectroscopy at the ESRF (Chapter \ref{chap:TR-icOS}), as well as a software I developed to streamline the quality assessment and analysis of \textit{in crystallo} UV-vis absorption and fluorescence spectra. 
+
+\vspace{2mm}
+
+To answer the biological questions asked in the framework of my three biological projects, I developed tools for the use of \textit{in crystallo} UV-vis absorption spectroscopy as a complement to time-resolved crystallography, as well as extensive crystallographic analysis methods enabling the deconvolution of molecular mechanisms from series of \(F_{obs}(time\ point) - F_{obs}(ground\ state)\) difference electron density maps. I also developed a methodology to explore the reaction pathway of a protein by cross-validating high-resolution structures of reaction intermediates trapped at cryogenic temperatures and validating their relevance with room-temperature structures of intermediates caught via TR-SSX during the reaction, thanks to \textit{in crystallo} UV-vis absorption spectra.  Finally, I developed methods based on the collection of rotation crystallography datasets on one or several crystals to study slow (ms to minutes) protein dynamic events.
+
+\vspace{2mm}
+
+Overall, this thesis advocates for the importance of coupling methodological developments with specific biological questions and using a combination of kinetic crystallography (cryo-trapping) and TR-SX approaches to study protein systems. With the development of sample-efficient methods suited to the study of reactions occurring over long time scales, this thesis also proposes a way to broaden the range of targets studied by time-resolved crystallography and attract more structural biologists into the field of protein dynamics studied by time-resolved and kinetic crystallography. 
+
+\pagebreak
+	{\input{Chapters/grossetable}}
+
+\pagebreak
+\part{ Bibliography}
+\printbibliography
+
+\pagebreak
+
+\part*{Appendix}
+\addcontentsline{toc}{part}{Appendix}
+    {\input{Chapters/Supplementaries}}
+
 \end{document}
+
